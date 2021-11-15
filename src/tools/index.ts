@@ -5,6 +5,7 @@ import createBrush from "./brush";
 import createPicker from "./picker";
 import createBucket from "./bucket";
 import createText from "./text";
+import createSelect from "./select";
 
 type Modifier = {
     name: string;
@@ -21,7 +22,9 @@ export type Tool = {
 export type Spec = {
     colors: {
         primary: number;
+        primaryString: string;
         secondary: number;
+        secondaryString: string;
     },
     buffer: {
         plot(color: number, x: number, y: number): void;
@@ -31,6 +34,7 @@ export type Spec = {
         stash(): void;
         unstash(): void;
         putImageData(imageData: ImageData, x: number, y: number): void;
+        getImageData(sx: number, sy: number, sw: number, sh: number): ImageData;
     },
     target: {
         offsetLeft: number;
@@ -44,4 +48,4 @@ export type Spec = {
 
 export type ToolFactory = (spec: Spec) => Tool;
 
-export default {createLine, createPencil, createBrush, createRectangle, createPicker, createBucket, createText};
+export default {createLine, createPencil, createBrush, createRectangle, createPicker, createBucket, createText, createSelect};

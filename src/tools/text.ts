@@ -1,13 +1,13 @@
 import type {Tool, Spec} from "./index";
-import {createDashedPlotter, plotRectangle} from "./internal/plotter";
+import {createDashedPlotter, createInversionFilter, plotRectangle} from "./internal/plotter";
 import TextElement from "../components/TextElement";
 
 export default function createText({buffer, colors, target}: Spec): Tool {
-    let mode: "select" | "insert" | "done" = "select";
+    let mode: "select" | "edit" | "done" = "select";
     let x0: number;
     let y0: number;
 
-    const plot = createDashedPlotter(buffer.plot);
+    const plot = createInversionFilter(createDashedPlotter(buffer.plot), buffer.pick);
 
     let handle: number;
     const tick: FrameRequestCallback =
@@ -25,7 +25,7 @@ export default function createText({buffer, colors, target}: Spec): Tool {
                 window.cancelAnimationFrame(handle);
 
                 buffer.stash();
-                plot(colors.primary, target.x, target.y);
+                plot(0, target.x, target.y);
                 buffer.commit();
 
                 window.requestAnimationFrame(tick);
@@ -39,7 +39,7 @@ export default function createText({buffer, colors, target}: Spec): Tool {
             if (mode === "select") {
                 window.cancelAnimationFrame(handle);
 
-                mode = "insert";
+                mode = "edit";
 
                 buffer.unstash();
 
@@ -59,6 +59,10 @@ export default function createText({buffer, colors, target}: Spec): Tool {
                 elm.style.top = `${y + offsetTop}px`;
                 elm.style.width = `${dx}px`;
                 elm.style.height = `${dy}px`;
+                const color = target.main ? colors.primaryString : colors.secondaryString;
+                const background = target.main ? colors.secondaryString : colors.primaryString;
+                elm.setAttribute("color", `#${color.substring(0, 6)}`);
+                elm.setAttribute("background", `#${background}`);
 
                 document.body.appendChild(elm);
 

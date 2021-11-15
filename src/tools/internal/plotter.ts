@@ -1,19 +1,23 @@
 import {at, rotate} from "./math";
 
+// type Filter = (x: number, y: number) => void;
 type Plotter = (color: number, x: number, y: number) => void;
 type Picker = (x: number, y: number) => number | undefined;
 
-export function plotCircle(plot: Plotter, color: number, x0: number, y0: number, x1: number, y1: number) {
-    const rx = Math.abs(x0 - x1);
-    const dx = rx + (x0 < x1 ? x0 : x1);
-    const ry = Math.abs(y0 - y1);
-    const dy = ry + (y0 < y1 ? y0 : y1);
+export function createInversionFilter(plot: Plotter, pick: Picker): Plotter {
+    return function invert(_, x, y) {
+        const curr = pick(x, y);
+        if (curr) {
+            const r = (~(curr >> 24) & 255);
+            const g = (~(curr >> 16) & 255);
+            const b = (~(curr >> 8) & 255);
+            const a = curr & 255; // Alpha
+            const next = r * Math.pow(2, 24)
+                + g * Math.pow(2, 16)
+                + b * Math.pow(2, 8)
+                + a;
 
-    for (let x = dx - rx; x <= dx + rx; x++) {
-        for (let y = dy - ry; y <= dy + ry; y++) {
-            if ((x - dx) ** 2 + (y - dy) ** 2 <= rx * ry) {
-                plot(color, x, y);
-            }
+            plot(next, x, y);
         }
     }
 }
@@ -29,7 +33,7 @@ export function plotPointer(plot: Plotter, color: number, x0: number, y0: number
     }
 }
 
-export function createDashedPlotter(plot: Plotter, size: number = 4): Plotter {
+export function createDashedPlotter(plot: Plotter, size: number = 8): Plotter {
     const cap = size * 2;
     let i = 0;
     return function plotDashed(color, x, y) {

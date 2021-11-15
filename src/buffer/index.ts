@@ -103,6 +103,21 @@ export default function createBuffer({width, height}: Spec) {
             return new ImageData(buf, width, height);
         },
 
+        /** @see {@link CanvasRenderingContext2D.getImageData} */
+        getImageData(sx: number, sy: number, sw: number, sh: number) {
+            const slice = new Uint8ClampedArray(sw * sh * 4);
+
+            for (let y = 0; y < sh; y++) {
+                const start = sx * 4 + (sy + y) * width * 4;
+                const end = (sx + sw) * 4 + (sy + y) * width * 4;
+                const offset = y * sw * 4;
+                slice.set(buf.slice(start, end), offset);
+            }
+
+            return new ImageData(slice, sw, sh);
+        },
+
+        /** @see {@link CanvasRenderingContext2D.putImageData} */
         putImageData(imageData: ImageData, x: number, y: number) {
             const left = x * 4;
             const top = y * width * 4;

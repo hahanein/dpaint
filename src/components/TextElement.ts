@@ -64,6 +64,8 @@ export default class TextElement extends HTMLElement {
     #canvas: HTMLCanvasElement;
     value: ImageData | undefined;
     #font = `1.2rem Helvetica, Arial, Verdana sans-serif`;
+    #color: string = "black";
+    #background: string = "white";
 
     constructor() {
         super();
@@ -73,12 +75,28 @@ export default class TextElement extends HTMLElement {
 
         this.#textarea = this.#root.querySelector("textarea")!;
         this.#textarea.style.font = this.#font;
+        this.#textarea.style.color = this.#color;
+        this.#textarea.style.background = this.#background;
 
         this.#canvas = document.createElement("canvas");
     }
 
     static get observedAttributes() {
-        return [];
+        return ["color", "background"];
+    }
+
+    attributeChangedCallback(name: string, _: string, value: string) {
+        switch (name) {
+            case "color":
+                this.#color = value;
+                this.#textarea.style.color = value;
+                break;
+
+            case "background":
+                this.#background = value;
+                this.#textarea.style.background = value;
+                break;
+        }
     }
 
     connectedCallback() {
@@ -96,10 +114,12 @@ export default class TextElement extends HTMLElement {
         this.#textarea.addEventListener("keyup", _ => {
             const lineHeight = computeLineHeight(this, this.#font);
             const ctx = this.#canvas.getContext("2d")!;
+            ctx.fillStyle = this.#background;
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = this.#color;
             ctx.font = this.#font;
             fillWrappedText(ctx, this.#textarea.value, width, lineHeight);
             this.value = ctx.getImageData(0, 0, width, height);
-            ctx.clearRect(0, 0, width, height);
         });
     }
 }

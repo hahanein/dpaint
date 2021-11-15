@@ -5,6 +5,13 @@ const strokes = [2, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
 
 let currentStroke = strokes[0];
 
+document.addEventListener("wheel", ({deltaY}) => {
+    const next = Math.floor(currentStroke + deltaY * 0.01);
+    if (next >= 2) {
+        currentStroke = next;
+    }
+});
+
 export default function createBrush({buffer, colors, target}: Spec): Tool {
     let x0: number;
     let y0: number;
