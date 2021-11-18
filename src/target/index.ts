@@ -9,6 +9,8 @@ type Spec = {
 };
 
 export default function createTarget({canvas, buffer}: Spec) {
+    const container: HTMLElement = canvas.parentElement!;
+
     const ctx = canvas.getContext("2d")!;
     ctx.imageSmoothingEnabled = false;
 
@@ -33,8 +35,8 @@ export default function createTarget({canvas, buffer}: Spec) {
         };
 
     document.addEventListener("mousemove", ({clientX, clientY}) => {
-        x = clientX - canvas.offsetLeft;
-        y = clientY - canvas.offsetTop;
+        x = Math.floor((clientX - canvas.offsetLeft + container.scrollLeft) / factor);
+        y = Math.floor((clientY - canvas.offsetTop + container.scrollTop) / factor);
     });
 
     document.addEventListener("mousedown", evt => {
@@ -59,11 +61,11 @@ export default function createTarget({canvas, buffer}: Spec) {
         },
 
         get x() {
-            return Math.floor(x / factor);
+            return x;
         },
 
         get y() {
-            return Math.floor(y / factor);
+            return y;
         },
 
         get main() {
@@ -80,8 +82,8 @@ export default function createTarget({canvas, buffer}: Spec) {
 
         zoom(value: number) {
             factor = value;
-            canvas.width = width / factor;
-            canvas.height = height / factor;
+            canvas.style.width = `${width * factor}px`;
+            canvas.style.height = `${height * factor}px`;
         }
     };
 }
