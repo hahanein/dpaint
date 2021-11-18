@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && mkdir -p docs && mv dist/index.html docs/index.html && rm -rf dist",
     "serve": "vite preview"
   },
   "devDependencies": {
     "typescript": "^4.3.2",
-    "vite": "^2.6.4"
+    "vite": "^2.6.4",
+    "vite-plugin-singlefile": "^0.5.1"
   }
 }
