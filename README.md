@@ -24,3 +24,4 @@ A JavaScript rewrite of _MSPAINT.EXE_ staying truthy to the original.
 ![Untitled](examples/18.bmp)
 ![Untitled](examples/22.bmp)
 ![Untitled](examples/23.bmp)
+![Untitled](examples/24.bmp)
