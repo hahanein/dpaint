@@ -1,6 +1,7 @@
 import type {Tool, Spec} from "./index";
 import {createDashedPlotter, createInversionFilter, plotRectangle} from "./internal/plotter";
 import TextElement from "../components/TextElement";
+import createLoop from "./internal/run";
 
 export default function createText({buffer, colors, target}: Spec): Tool {
     let mode: "select" | "edit" | "done" = "select";
@@ -9,26 +10,25 @@ export default function createText({buffer, colors, target}: Spec): Tool {
 
     const plot = createInversionFilter(createDashedPlotter(buffer.plot), buffer.pick);
 
-    let handle: number;
-    const tick: FrameRequestCallback =
+    const [loop, cancel] = createLoop();
+
+    const paint: FrameRequestCallback =
         _ => {
             buffer.unstash();
             plotRectangle(plot, colors.primary, x0, y0, target.x, target.y);
             buffer.commit();
-
-            handle = window.requestAnimationFrame(tick);
         };
 
     const obj = {
         begin() {
             if (mode === "select") {
-                window.cancelAnimationFrame(handle);
+                cancel();
 
                 buffer.stash();
                 plot(0, target.x, target.y);
                 buffer.commit();
 
-                window.requestAnimationFrame(tick);
+                loop(paint);
             }
 
             x0 = target.x;
@@ -37,7 +37,7 @@ export default function createText({buffer, colors, target}: Spec): Tool {
 
         close() {
             if (mode === "select") {
-                window.cancelAnimationFrame(handle);
+                cancel();
 
                 mode = "edit";
 

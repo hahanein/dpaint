@@ -6,6 +6,7 @@ import createPicker from "./picker";
 import createBucket from "./bucket";
 import createText from "./text";
 import createSelect from "./select";
+import createMagnifier from "./magnifier";
 
 type Modifier = {
     name: string;
@@ -43,9 +44,20 @@ export type Spec = {
         y: number;
         main: boolean;
         secondary: boolean;
+        zoom(factor: number): void;
     }
 };
 
 export type ToolFactory = (spec: Spec) => Tool;
 
-export default {createLine, createPencil, createBrush, createRectangle, createPicker, createBucket, createText, createSelect};
+export default {
+    createLine,
+    createPencil,
+    createBrush,
+    createRectangle,
+    createPicker,
+    createBucket,
+    createText,
+    createSelect,
+    createMagnifier
+};

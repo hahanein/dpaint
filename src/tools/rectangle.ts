@@ -1,6 +1,7 @@
 import type {Tool, Spec} from "./index";
 import {createSquarePlotter, plotRectangle, plotSolidRectangle} from "./internal/plotter";
 import {sharedPersistentState} from "./internal/shared";
+import createLoop from "./internal/run";
 
 const flagOutline = 1 << 0;
 const flagFill = 1 << 1;
@@ -17,8 +18,9 @@ export default function createRectangle({buffer, colors, target}: Spec): Tool {
     let x0: number;
     let y0: number;
 
-    let handle: number;
-    const tick: FrameRequestCallback =
+    const [loop, cancel] = createLoop();
+
+    const paint: FrameRequestCallback =
         _ => {
             buffer.unstash();
 
@@ -32,13 +34,11 @@ export default function createRectangle({buffer, colors, target}: Spec): Tool {
             }
 
             buffer.commit();
-
-            handle = window.requestAnimationFrame(tick);
         };
 
     const obj = {
         begin() {
-            window.cancelAnimationFrame(handle);
+            cancel();
 
             buffer.stash();
 
@@ -56,11 +56,11 @@ export default function createRectangle({buffer, colors, target}: Spec): Tool {
 
             buffer.commit();
 
-            handle = window.requestAnimationFrame(tick);
+            loop(paint);
         },
 
         close() {
-            window.cancelAnimationFrame(handle);
+            cancel();
             buffer.snapshot();
         },
 

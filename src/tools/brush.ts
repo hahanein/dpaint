@@ -1,5 +1,6 @@
 import type {Tool, Spec} from "./index";
 import {createSquarePlotter, plotLine} from "./internal/plotter";
+import createLoop from "./internal/run";
 
 const strokes = [2, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
 
@@ -16,21 +17,20 @@ export default function createBrush({buffer, colors, target}: Spec): Tool {
     let x0: number;
     let y0: number;
 
-    let handle: number;
-    const tick: FrameRequestCallback =
+    const [loop, cancel] = createLoop();
+
+    const paint: FrameRequestCallback =
         _ => {
             let plot = createSquarePlotter(buffer.plot, currentStroke);
             plotLine(plot, target.main ? colors.primary : colors.secondary, x0, y0, target.x, target.y);
             x0 = target.x;
             y0 = target.y;
             buffer.commit();
-
-            handle = window.requestAnimationFrame(tick);
         };
 
     const obj = {
         begin() {
-            window.cancelAnimationFrame(handle);
+            cancel();
 
             let plot = createSquarePlotter(buffer.plot, currentStroke);
             plot(target.main ? colors.primary : colors.secondary, target.x, target.y);
@@ -38,11 +38,12 @@ export default function createBrush({buffer, colors, target}: Spec): Tool {
             y0 = target.y;
             buffer.commit();
 
-            handle = window.requestAnimationFrame(tick);
+            loop(paint);
         },
 
         close() {
-            window.cancelAnimationFrame(handle);
+            cancel();
+
             buffer.snapshot();
         },
 

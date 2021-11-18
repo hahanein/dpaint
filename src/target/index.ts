@@ -2,9 +2,23 @@ import type {Tool} from "../tools";
 
 type Spec = {
     canvas: HTMLCanvasElement;
+    buffer: {
+        subscribe(notify: () => void): () => void;
+        imageData: ImageData;
+    }
 };
 
-export default function createTarget({canvas}: Spec) {
+export default function createTarget({canvas, buffer}: Spec) {
+    const ctx = canvas.getContext("2d")!;
+    ctx.imageSmoothingEnabled = false;
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    let factor = 1;
+
+    void buffer.subscribe(() => ctx.putImageData(buffer.imageData, 0, 0));
+
     let tool: Tool;
 
     let main: boolean;
@@ -45,11 +59,11 @@ export default function createTarget({canvas}: Spec) {
         },
 
         get x() {
-            return x;
+            return Math.floor(x / factor);
         },
 
         get y() {
-            return y;
+            return Math.floor(y / factor);
         },
 
         get main() {
@@ -62,6 +76,13 @@ export default function createTarget({canvas}: Spec) {
 
         set tool(t: Tool) {
             tool = t;
+        },
+
+        zoom(value: number) {
+            factor = value;
+            canvas.width = width / factor;
+            canvas.height = height / factor;
         }
     };
 }
+

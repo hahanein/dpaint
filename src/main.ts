@@ -12,7 +12,6 @@ const width = 1024;
 const height = 720;
 
 const canvas = document.querySelector("canvas")!;
-const ctx = canvas.getContext("2d")!;
 
 canvas.style.width = width + "px";
 canvas.style.height = height + "px";
@@ -20,10 +19,8 @@ canvas.style.height = height + "px";
 canvas.width = width;
 canvas.height = height;
 
-const target = createTarget({canvas});
-
 const buffer = createBuffer({width, height});
-buffer.subscribe(() => ctx.putImageData(buffer.imageData, 0, 0));
+const target = createTarget({canvas, buffer});
 
 const toolSpec: ToolSpec = {buffer, colors, target};
 
