@@ -27,10 +27,16 @@ const toolSpec: ToolSpec = {buffer, colors, target};
 
 const htmToolbox = document.getElementById("toolbox")!;
 const htmModifiers = document.getElementById("toolbox-modifiers")!;
+let i = 0;
 for (const [factoryName, create] of Object.entries(tools)) {
     const name = factoryName.substr("create".length);
     const htm = document.createElement("button");
-    htm.innerText = name
+    htm.name = name
+    htm.className = "tool";
+    htm.style.backgroundPositionX = `${i % 2 === 1 ? -26 : -1}px`;
+    htm.style.backgroundPositionY = `${-1 - Math.floor(i / 2) * 25}px`;
+
+    i++;
 
     const setupTool = () => {
         const tool = create(toolSpec);

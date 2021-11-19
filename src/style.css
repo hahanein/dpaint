@@ -9,7 +9,7 @@ body, html {
 
 body {
   display: grid;
-  grid-template-columns: 6rem 1fr;
+  grid-template-columns: 4rem 1fr;
   grid-template-rows: 2rem 1fr 4rem 1rem;
   grid-template-areas:
     "header header"
@@ -52,12 +52,24 @@ canvas {
   grid-area: sidebar;
   display: flex;
   flex-direction: column;
-  padding: 2px;
+  padding: 5px;
 }
 
 #toolbox {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: .5rem;
+}
+
+.tool {
+  background: url(icons.bmp);
+  width: 25px;
+  height: 25px;
+  padding-right: 2px;
+  padding-bottom: 2px;
+  margin-right: 2px;
+  margin-bottom: 2px;
 }
 
 footer {
