@@ -7,6 +7,7 @@ import createBuffer from "./buffer";
 import ColorElement from "./components/ColorElement";
 import ColorsElement from "./components/ColorsElement";
 import createTarget from "./target";
+import PositionElement from "./components/PositionElement";
 
 const width = 1024;
 const height = 720;
@@ -78,7 +79,18 @@ colors.subscribe(() => {
     htmColors.setAttribute("secondary", colors.secondaryString);
 });
 
-document.querySelector("footer")!.appendChild(htmColors);
+const htmBottom = document.querySelector("#bottom")!;
+htmBottom.appendChild(htmColors);
+
+const htmPosition = new PositionElement();
+window.requestAnimationFrame(function updatePosition() {
+    htmPosition.setAttribute("x", String(target.x));
+    htmPosition.setAttribute("y", String(target.y));
+    window.requestAnimationFrame(updatePosition);
+});
+
+const htmFooter = document.querySelector("footer")!;
+htmFooter.appendChild(htmPosition);
 
 document.addEventListener("keydown", function undoRedo(evt) {
     if (evt.ctrlKey && evt.key === "z") {

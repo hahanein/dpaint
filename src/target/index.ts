@@ -34,10 +34,14 @@ export default function createTarget({canvas, buffer}: Spec) {
             secondary = evt.button === 2;
         };
 
-    document.addEventListener("mousemove", ({clientX, clientY}) => {
-        x = Math.floor((clientX - canvas.offsetLeft + container.scrollLeft) / factor);
-        y = Math.floor((clientY - canvas.offsetTop + container.scrollTop) / factor);
-    });
+    const updatePosition: (evt: MouseEvent) => void =
+        ({clientX, clientY}) => {
+            x = Math.floor((clientX - canvas.offsetLeft + container.scrollLeft) / factor);
+            y = Math.floor((clientY - canvas.offsetTop + container.scrollTop) / factor);
+        };
+
+    document.addEventListener("wheel", updatePosition)
+    document.addEventListener("mousemove", updatePosition);
 
     document.addEventListener("mousedown", evt => {
         updateButtons(evt);

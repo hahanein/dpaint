@@ -9,11 +9,12 @@ body, html {
 
 body {
   display: grid;
-  grid-template-columns: 6em 1fr;
-  grid-template-rows: 2em 1fr 5em;
+  grid-template-columns: 6rem 1fr;
+  grid-template-rows: 2rem 1fr 4rem 1rem;
   grid-template-areas:
     "header header"
     "sidebar main"
+    "bottom bottom"
     "footer footer";
 }
 
@@ -34,6 +35,11 @@ header {
   border-right-color: white;
   border-bottom-color: white;
   overflow: scroll;
+}
+
+#bottom {
+  grid-area: bottom;
+  display: flex;
 }
 
 canvas {
@@ -57,6 +63,7 @@ canvas {
 footer {
   grid-area: footer;
   display: flex;
+  flex-direction: row-reverse;
 }
 
 #title {
