@@ -23,16 +23,21 @@ export default class PositionElement extends HTMLElement {
         return ["x", "y"];
     }
 
-    attributeChangedCallback(name: string, _: string, value: string) {
+    attributeChangedCallback(name: string, prev: string, next: string) {
+        if (prev === next) {
+            // Do nothing.
+            return;
+        }
+
         switch (name) {
             case "x":
                 const y = this.getAttribute("y");
-                this.#display.textContent = `${value}/${y}`;
+                this.#display.textContent = `${next}/${y}`;
                 break;
 
             case "y":
                 const x = this.getAttribute("x");
-                this.#display.textContent = `${x}/${value}`;
+                this.#display.textContent = `${x}/${next}`;
                 break;
         }
     }
