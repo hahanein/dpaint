@@ -10,7 +10,7 @@ body, html {
 body {
   display: grid;
   grid-template-columns: 4rem 1fr;
-  grid-template-rows: 2rem 1fr 4rem 1rem;
+  grid-template-rows: 2rem 1fr 4rem 1.4rem;
   grid-template-areas:
     "header header"
     "sidebar main"
@@ -74,8 +74,6 @@ canvas {
 
 footer {
   grid-area: footer;
-  display: flex;
-  flex-direction: row-reverse;
 }
 
 #title {

@@ -89,6 +89,8 @@ const htmBottom = document.querySelector("#bottom")!;
 htmBottom.appendChild(htmColors);
 
 const htmPosition = new PositionElement();
+htmPosition.style.float = "right";
+htmPosition.style.marginRight = ".2rem";
 window.requestAnimationFrame(function updatePosition() {
     htmPosition.setAttribute("x", String(target.x));
     htmPosition.setAttribute("y", String(target.y));

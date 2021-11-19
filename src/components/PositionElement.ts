@@ -1,5 +1,10 @@
 const template = document.createElement("template");
 template.innerHTML = `
+<style>
+#display {
+    font-family: system-ui;
+}
+</style>
 <div id="display"></div>
 `;
 
@@ -12,15 +17,20 @@ export default class PositionElement extends HTMLElement {
         const root = this.attachShadow({mode: "closed"});
         root.appendChild(template.content.cloneNode(true));
 
-        const x = this.getAttribute("x");
-        const y = this.getAttribute("y");
 
         this.#display = root.querySelector("#display")!;
-        this.#display.textContent = `${x}/${y}`;
     }
 
     static get observedAttributes() {
         return ["x", "y"];
+    }
+
+    connectedCallback() {
+        const x = this.getAttribute("x");
+        const y = this.getAttribute("y");
+        if (x && y) {
+            this.#display.textContent = `${x}/${y}`;
+        }
     }
 
     attributeChangedCallback(name: string, prev: string, next: string) {
